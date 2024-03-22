@@ -30,6 +30,7 @@ Board - Defines a standard board and all main changes and backend modifications 
 MyList - A custom list class according to the OOP assignment 
 
 IMPLEMENTATION CLASSES:
+
 GameLogic - Handles game logic, implements the chessController interface and manages interactions between players and the board. (incomplete)
 
 AI 1 (Easy)- Basic AI player for a chess game. (have to make)
