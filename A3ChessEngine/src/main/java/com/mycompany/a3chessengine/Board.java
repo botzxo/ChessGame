@@ -28,12 +28,11 @@ public class Board {
     
     public Board(){
         gameBoard = new Tile[8][8];
+        createBoard();
         this.blackPieces = calculateActivePieces(this.gameBoard, Alliance.BLACK);
         this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
-        createBoard();
-        
-        MyList<Move> blackLegalMoves = calculateLegalMoves(this.blackPieces);
-        MyList<Move> whiteLegalMoves = calculateLegalMoves(this.whitePieces);
+        this.blackLegalMoves = calculateLegalMoves(this.blackPieces);
+        this.whiteLegalMoves = calculateLegalMoves(this.whitePieces);
     }
     
     public Tile getTile(int coordX, int coordY){
@@ -88,7 +87,7 @@ public class Board {
             for(int j=0; j<8; j++){
                 if(gameBoard[i][j].isOccupied()){
                     Piece piece = gameBoard[i][j].getPiece();
-                    if(piece.getAlliace() == alliance){
+                    if(piece.getAlliance() == alliance){
                         activePieces.add(piece);
                     }
                 }
@@ -109,19 +108,11 @@ public class Board {
     }
     
     public boolean isValidMove(Move move){
-        Alliance alliance = move.getPiece().getAlliace();
+        Alliance alliance = move.getPiece().getAlliance();
         if(alliance == Alliance.WHITE){
-            if(whiteLegalMoves.contains(move)){
-                return true;
-            }else{
-                return false;
-            }
+            return whiteLegalMoves.contains(move);
         }else{
-            if(blackLegalMoves.contains(move)){
-                return true;
-            }else{
-                return false;
-            }
+            return blackLegalMoves.contains(move);
         }
     }
     
@@ -133,19 +124,47 @@ public class Board {
         Piece currPiece = move.getPiece();
         Tile currTile = gameBoard[currPiece.getPiecePosX()][currPiece.getPiecePosY()];
         Tile destinationTile = gameBoard[move.getDestinationX()][move.getDestinationY()];
+      
+        //Modifying the postion and occupancy of current piece
+        currTile.setOccupied(false);
+        currPiece.setPiecePosX(move.getDestinationX());
+        currPiece.setPiecePosY(move.getDestinationY());
+            
+        //Modifying the destinationTile
+        destinationTile.setPiece(currPiece);
+        destinationTile.setOccupied(true);
+            
+        //Modifying the moved Tile
+        currTile.setPiece(null);
+        currTile.setOccupied(false);
         
+         //Removing attacked piece from the pieces and legal move list
         if(move.isAttack()){
-//            attackMove attackMove = (attackMove)move;
-//            Piece attackedPiece = attackMove.getAttackedPiece();
-            currTile.setOccupied(false);
-            destinationTile.setPiece(currPiece);
-            destinationTile.setOccupied(true);
-        }   
+            attackMove attackedMove = (attackMove)move;
+            Piece attackedPiece = attackedMove.getAttackedPiece();
+            
+            MyList<Move> attackedPieceLegalMoves = attackedPiece.calculateLegalMoves(this);
+            for(int i=0; i<attackedPieceLegalMoves.size(); i++){
+                Move currMove = attackedPieceLegalMoves.get(i);
+                
+                if(attackedPiece.getAlliance() == Alliance.WHITE){
+                    whiteLegalMoves.remove(currMove);
+                }else{
+                    blackLegalMoves.remove(currMove);
+                }
+            }
+            if(attackedPiece.getAlliance() == Alliance.WHITE){
+                whitePieces.remove(attackedPiece);
+            }else{
+                blackPieces.remove(attackedPiece);
+            }
+        }
+           
     }
     
     public String printTileDetail(Tile newTile){
         if(newTile.isOccupied()){
-            if(newTile.getPiece().getAlliace() == Alliance.BLACK){
+            if(newTile.getPiece().getAlliance() == Alliance.BLACK){
                 return newTile.toString().toLowerCase();
             }
         }
