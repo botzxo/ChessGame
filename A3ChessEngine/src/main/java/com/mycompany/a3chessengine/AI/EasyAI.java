@@ -40,7 +40,7 @@ public class EasyAI implements ChessPlayer{
         }else{
             newMove = new normalMove(board.getTile(fromRow, fromCol).getPiece(), board, toRow, toCol);
         }
-        if(board.isValidMove(newMove)){
+        if(board.isValidMove(newMove) && board.getTile(fromRow, fromRow).getPiece().getAlliance() == Alliance.WHITE){
             return newMove;
         }
         return null;
