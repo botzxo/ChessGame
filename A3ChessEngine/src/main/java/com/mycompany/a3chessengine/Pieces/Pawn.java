@@ -18,8 +18,8 @@ import com.mycompany.a3chessengine.MyList;
  */
 public class Pawn extends Piece {
     
-    private static int[] moveCoordinatesX = {0, 1, -1};
-    private static int[] moveCoordinatesY = {1, 1, 1};
+    private static int[] moveCoordinatesY = {0, 1, -1};
+    private static int[] moveCoordinatesX = {1, 1, 1};
     
     public Pawn(int piecePosX, int piecePosY, Alliance pieceAlliance) {
         super(piecePosX, piecePosY, pieceAlliance);
@@ -39,10 +39,10 @@ public class Pawn extends Piece {
                 continue;
             }
             Tile destinationTile = board.getTile(pieceDestinationX, pieceDestinationY);
-            if(moveCoordinatesX[i]==0 && !destinationTile.isOccupied()){
+            if(moveCoordinatesY[i]==0 && !destinationTile.isOccupied()){
                 movesList.add(new normalMove(this, board, pieceDestinationX, pieceDestinationY));;
             }
-            else if(moveCoordinatesX[i]==1 && !((this.piecePostionY == 0 && this.getAlliance()== Alliance.WHITE) || 
+            else if(moveCoordinatesY[i]==1 && !((this.piecePostionY == 0 && this.getAlliance()== Alliance.WHITE) || 
                     (this.piecePostionY == 7 && this.getAlliance() == Alliance.BLACK))){
                 if(destinationTile.isOccupied()){
                     Piece pieceAtDestination = destinationTile.getPiece();
@@ -50,7 +50,7 @@ public class Pawn extends Piece {
                         movesList.add(new attackMove(this, pieceAtDestination, board, pieceDestinationX, pieceDestinationY));
                     }
                 }
-            }else if(moveCoordinatesX[i]==-1 && !((this.piecePostionY == 7 && this.getAlliance()== Alliance.WHITE) || 
+            }else if(moveCoordinatesY[i]==-1 && !((this.piecePostionY == 7 && this.getAlliance()== Alliance.WHITE) || 
                     (this.piecePostionY == 0 && this.getAlliance() == Alliance.BLACK))){
                 if(destinationTile.isOccupied()){
                     Piece pieceAtDestination = destinationTile.getPiece();
